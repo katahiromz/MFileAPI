@@ -3,7 +3,7 @@
  */
 
 #ifndef MZC4_MFILEAPI_H_
-#define MZC4_MFILEAPI_H_        24  /* Version 24 */
+#define MZC4_MFILEAPI_H_        25  /* Version 25 */
 
 /*
  * mpath_... functions
@@ -449,7 +449,11 @@ mfile_GetContents(const MChar *filename, size_t *psize)
 MZC_INLINE bool mfile_PutText(const MChar *filename, const MChar *str)
 {
     USING_NAMESPACE_STD;
+#ifdef _WIN32
     return mfile_PutContents(filename, str, _tcslen(str) * sizeof(MChar));
+#else
+    return mfile_PutContents(filename, str, strlen(str));
+#endif
 }
 
 MZC_INLINE bool

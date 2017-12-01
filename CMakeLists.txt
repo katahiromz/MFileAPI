@@ -31,6 +31,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 ##############################################################################
 
+set(CMAKE_CXX_STANDARD 11)
+
 add_executable(MFileAPITest MFileAPITest.cpp)
 add_test(NAME MFileAPITest COMMAND MFileAPITest)
 
