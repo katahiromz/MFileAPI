@@ -3,7 +3,7 @@
  */
 
 #ifndef MZC4_MFILEAPI_H_
-#define MZC4_MFILEAPI_H_        23  /* Version 23 */
+#define MZC4_MFILEAPI_H_        24  /* Version 24 */
 
 /*
  * mpath_... functions
@@ -13,6 +13,13 @@
 
 /* TODO: support MSDOS, link, shortcut */
 /**************************************************************************/
+
+#if defined(UNICODE) && !defined(_UNICODE)
+    #define _UNICODE
+#endif
+#if !defined(UNICODE) && defined(_UNICODE)
+    #define UNICODE
+#endif
 
 /* C99 and C++11 */
 #if __STDC_VERSION__ >= 199901L && !defined(C99)
