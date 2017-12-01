@@ -3,7 +3,7 @@
  */
 
 #ifndef MZC4_MFILEAPI_H_
-#define MZC4_MFILEAPI_H_        22  /* Version 22 */
+#define MZC4_MFILEAPI_H_        23  /* Version 23 */
 
 /*
  * mpath_... functions
@@ -286,7 +286,7 @@ MZC_INLINE bool mfile_Delete(const MChar *filename)
     USING_NAMESPACE_STD;
     assert(filename);
 #ifdef _WIN32
-    return !!::DeleteFile(filename);
+    return !!DeleteFile(filename);
 #elif defined(MSDOS)
     return remove(filename) == 0;
 #else
@@ -300,14 +300,14 @@ mfile_GetSize64(const MChar *filename)
     USING_NAMESPACE_STD;
     assert(filename);
 #ifdef _WIN32
-    HANDLE hFile = ::CreateFile(filename, GENERIC_READ,
+    HANDLE hFile = CreateFile(filename, GENERIC_READ,
         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
         OPEN_EXISTING, FILE_FLAG_NO_BUFFERING, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
         return (uint64_t)-1;
 
     DWORD low, high;
-    low = ::GetFileSize(hFile, &high);
+    low = GetFileSize(hFile, &high);
     CloseHandle(hFile);
     return low | ((uint64_t)high << 32);
 #else
@@ -328,13 +328,13 @@ mfile_GetSize(const MChar *filename, unsigned long *high)
         *high = 0;
 
 #ifdef _WIN32
-    HANDLE hFile = ::CreateFile(filename, GENERIC_READ,
+    HANDLE hFile = CreateFile(filename, GENERIC_READ,
         FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
         OPEN_EXISTING, FILE_FLAG_NO_BUFFERING, NULL);
     if (hFile == INVALID_HANDLE_VALUE)
         return 0xFFFFFFFF;
 
-    DWORD low = ::GetFileSize(hFile, high);
+    DWORD low = GetFileSize(hFile, high);
     CloseHandle(hFile);
     return low;
 #else
@@ -382,7 +382,7 @@ mfile_GetContents(const MChar *filename, size_t *psize)
             pb = (uint8_t *)(pv);
             if (pb)
             {
-                if (::ReadFile(hFile, pb, cbFile, &cbRead, NULL) &&
+                if (ReadFile(hFile, pb, cbFile, &cbRead, NULL) &&
                     cbFile == cbRead)
                 {
                     pb[cbFile + 0] = 0;
@@ -462,10 +462,10 @@ mfile_PutContents(const MChar *filename, const void *pvContents, size_t size)
         CREATE_ALWAYS, FILE_FLAG_WRITE_THROUGH, NULL);
     if (hFile != INVALID_HANDLE_VALUE)
     {
-        if (::WriteFile(hFile, pvContents, dwSize, &cbWritten, NULL) &&
+        if (WriteFile(hFile, pvContents, dwSize, &cbWritten, NULL) &&
             dwSize == cbWritten)
         {
-            if (::CloseHandle(hFile))
+            if (CloseHandle(hFile))
                 bOK = true;
         }
         else
@@ -520,7 +520,7 @@ mfile_Move(const MChar *existing_file, const MChar *new_file)
     assert(existing_file);
     assert(new_file);
 #ifdef _WIN32
-    return ::MoveFile(existing_file, new_file) != FALSE;
+    return MoveFile(existing_file, new_file) != FALSE;
 #else
     return rename(existing_file, new_file) == 0;
 #endif
@@ -532,7 +532,7 @@ mfile_Copy(const MChar *existing_file, const MChar *new_file,
 {
     USING_NAMESPACE_STD;
 #ifdef _WIN32
-    return ::CopyFile(existing_file, new_file, bFailIfExists) != FALSE;
+    return CopyFile(existing_file, new_file, bFailIfExists) != FALSE;
 #else
     size_t size;
     void *ptr = mfile_GetContents(existing_file, &size);
@@ -683,7 +683,7 @@ MZC_INLINE bool mdir_Remove(const MChar *pathname)
 {
     USING_NAMESPACE_STD;
 #ifdef _WIN32
-    return !!::RemoveDirectory(pathname);
+    return !!RemoveDirectory(pathname);
 #else
     return rmdir(pathname) == 0;
 #endif
